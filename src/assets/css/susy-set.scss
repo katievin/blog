@@ -1,0 +1,79 @@
+$susy: (
+  'svg-grid-colors':rgba(228, 59, 59,0),
+  'columns': susy-repeat(12),
+  'gutters': 0.25,
+  'spread': 'narrow',
+  'container-spread': 'narrow',
+);
+$mobile: (
+  'min-width': 0px,
+  'columns': susy-repeat(4),
+  'gutters': 0.25,
+  'spread': 'narrow',
+  'container-spread': 'narrow',
+);
+$mobile-big: (
+  'min-width': 500px,
+  'columns': susy-repeat(4),
+  'gutters': 0.25,
+  'spread': 'narrow',
+  'container-spread': 'narrow',
+);
+$pad: (
+  'min-width': 767px,
+  'columns': susy-repeat(9),
+  'gutters': 0.25,
+  'spread': 'narrow',
+  'container-spread': 'wider',
+);
+$desktop: (
+  'min-width': 1280px,
+  'columns': susy-repeat(12),
+  'gutters': 0.25,
+  'spread': 'narrow',
+  'container-spread': 'narrow',
+);
+@mixin with-layout($config){
+    //  parse and normalize any shorthand arguments
+    $config: susy-compile($config);
+    // record the global settings -
+    // and update the global variable with our new settings
+    $global: $susy;
+    $susy: map-merge($susy, $config) !global;
+    // any content inside this mixin
+    // will use the local settings
+    @content;
+    // return the global variable to its initial value
+    $susy: $global !global;
+}
+@mixin susy-breakpoint($config){
+    //  parse and normalize any shorthand arguments
+    $config: susy-compile($config);
+    // build min-and-max queries
+    $min: map-get($config, 'min-width');
+    $min: if($min, '(min-width: #{$min})', null);
+    $max: map-get($config, 'max-width');
+    $max: if($max, '(max-width: #{$max})', null);
+    // combine them if we need both
+    $and: if($min and $max, '#{$min} and #{$max}', null);
+    // or fall back to the value we need…
+    $query: $and or $min or $max;
+    // apply the results…
+    @media #{$query} {
+        @include with-layout($config) {
+            @content;
+        }
+    }
+}
+@mixin span(
+  $span,
+  $config: $susy
+) {
+  width: span($span, $config);
+  @if index($span, 'last') {
+    float: right;
+    // margin-right: 0; if you want an explicit reset
+  } @else {
+    float: left;
+  }
+}
