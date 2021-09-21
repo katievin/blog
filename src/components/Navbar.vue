@@ -1,14 +1,20 @@
 <template>
   <div class='c-navbar__container'>
-    <div class='c-navbar__logo'></div>
-    <div class='c-navbar__switch'></div>
+    <div class='c-navbar__logo' ></div>
+    <div class='c-navbar__switch' id="js-c-navbar__switch" @click="switchClick"></div>
   </div>
 </template>
 
 <script lang='ts'>
 import { defineComponent, ref } from 'vue'
 export const Navbar = defineComponent({
-  name: 'Navbar'
+  name: 'Navbar',
+  setup (_, { emit }) {
+    const switchClick = () => {
+      emit('sidebarSwitch')
+    }
+    return { switchClick }
+  }
 })
 export default Navbar
 </script>
@@ -49,6 +55,9 @@ export default Navbar
         }
         @include susy-breakpoint($pad) {
             display: none;
+        }
+        &--dark{
+            background-image: url('../assets/images/icons/switch-dark.png');
         }
     }
 }

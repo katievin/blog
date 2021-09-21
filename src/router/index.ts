@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import Home from '../views/Home.vue'
 import CodePage from '../views/CodePage.vue'
+import CodeInfo from '../views/CodeInfo.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -20,6 +21,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/CodePage',
     name: 'CodePage',
     component: CodePage
+  },
+  {
+    path: '/CodeInfo/:typeIndex:index',
+    name: 'CodeInfo',
+    component: CodeInfo
   }
 ]
 
