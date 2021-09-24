@@ -18,7 +18,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
   {
-    path: '/CodePage',
+    path: '/CodePage/:index?',
     name: 'CodePage',
     component: CodePage
   },
@@ -30,7 +30,7 @@ const routes: Array<RouteRecordRaw> = [
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory('/blog/'),
   routes
 })
 
