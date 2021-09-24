@@ -12,7 +12,6 @@
             </div>
           </div>
         </transition>
-        <div class="c-home__"></div>
       </div>
     </div>
   </div>

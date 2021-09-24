@@ -5,7 +5,7 @@
     <div class="l-normal__container">
       <div class="c-codepage__container" :class="{'c-codepage__container--moved':containerMoved}">
         <div v-for="(t,index) in codeSet" :key="index">
-          <div class="c-codepage__tag" :class="{'c-codepage__tag--selected':listShowIndex===index}" @click="showCodeList(index)">
+          <div class="c-codepage__tag" :class="{'c-codepage__tag--selected':listShowIndex===index}" @click="showCodeList([index])">
             <div class="c-codepage__icon">{{t.topic.split('')[0].toUpperCase()}}</div>
             <div class="c-codepage__topic">{{t.topic}}</div>
           </div>
@@ -22,6 +22,7 @@ import Navbar from '../components/Navbar.vue'
 import Sidebar from '../components/Sidebar.vue'
 import CodeList from '../components/codepage/CodeList.vue'
 import { codeSet } from '../assets/code/codeSet'
+import { useRouter } from 'vue-router'
 
 export const CodePage = defineComponent({
   name: 'CodePage',
@@ -34,8 +35,9 @@ export const CodePage = defineComponent({
 
   setup () {
     const listShowIndex = ref<number|null>(null)
-    const showCodeList = (index:number) => {
-      listShowIndex.value = (index === listShowIndex.value) ? null : index
+    const router = useRouter()
+    const showCodeList = (indexArray:number[]) => {
+      listShowIndex.value = (indexArray[0] === listShowIndex.value) ? null : indexArray[0]
     }
     const containerMoved = ref<boolean>(false)
     const sidebarSwitch = () => {
@@ -48,6 +50,10 @@ export const CodePage = defineComponent({
     onMounted(() => {
       // 使用深色開關
       document.getElementById('js-c-navbar__switch')?.classList.add('c-navbar__switch--dark')
+      // 這邊判斷router 初始化Sidebar
+      if (Object.keys(router.currentRoute.value.params).length !== 0) {
+        listShowIndex.value = Number(router.currentRoute.value.params.index)
+      }
     })
     return { codeSet, listShowIndex, showCodeList, sidebarSwitch, containerMoved, focusArray }
   }
@@ -64,11 +70,15 @@ export default CodePage
     margin-top:60px;
     position:relative;
     background-color: white;
+    z-index: 2;
+    height: calc(100% - 60px);
+    overflow-y: auto;
+    overflow-x: hidden;
     @include susy-breakpoint($mobile) {
       width: 100%;
     }
     @include susy-breakpoint($pad) {
-      width: 60%;
+      width: 70%;
       margin-left: 30%;
     }
     @include susy-breakpoint($desktop) {

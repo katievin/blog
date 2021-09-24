@@ -1,11 +1,10 @@
 <template>
-  <div :id="'gist_'+gistArray[0]+'_'+gistArray[1]+'_'+gistArray[2]">
-      <!-- <script type="application/javascript" defer src="https://gist.github.com/katievin/19ae7a7dbfd5476f97eb62d812d5367e.js"></script> -->
+  <div :id="'gist_' + props.gistArray[0] + '_' + props.gistArray[1] + '_' + props.gistArray[2]">
   </div>
 </template>
 
 <script lang='ts'>
-import { defineComponent, onMounted, PropType, ref } from 'vue'
+import { computed, defineComponent, getCurrentInstance, onMounted, PropType, ref, watch } from 'vue'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import postscribe from 'postscribe'
@@ -17,16 +16,41 @@ export const Gist = defineComponent({
     gistUrl: String
   },
 
-  setup (props) {
-    const scriptgistjs = document.createElement('script')
+  setup (props, { emit }) {
+    watch(computed(() => props.gistUrl), () => {
+      setTimeout(() => {
+        if (props.gistUrl) {
+          if (props.gistArray) {
+            const div = document.getElementById('gist_' + props.gistArray[0] + '_' + props.gistArray[1] + '_' + props.gistArray[2])
+            postscribe(document.getElementById('gist_' + props.gistArray[0] + '_' + props.gistArray[1] + '_' + props.gistArray[2]), props.gistUrl, {
+              beforeEnqueue: () => {
+                while (div?.firstChild) {
+                  div.removeChild(div.firstChild)
+                }
+              },
+              done: () => {
+                if (props.gistArray) emit('gistLoaded', props.gistArray[2])
+              }
+            })
+          }
+        } else {
+        // 沒有Gist需要載入
+          if (props.gistArray) emit('gistLoaded', props.gistArray[2])
+        }
+      }, 100)
+    })
     onMounted(() => {
       if (props.gistUrl) {
-        scriptgistjs.setAttribute('src', 'https://gist.github.com/katievin/19ae7a7dbfd5476f97eb62d812d5367e.js')
-        scriptgistjs.onload = () => {
-          console.log(123)
+        if (props.gistArray) {
+          postscribe(document.getElementById('gist_' + props.gistArray[0] + '_' + props.gistArray[1] + '_' + props.gistArray[2]), props.gistUrl, {
+            done: () => {
+              if (props.gistArray) emit('gistLoaded', props.gistArray[2])
+            }
+          })
         }
-        // eslint-disable-next-line no-useless-escape
-        if (props.gistArray)postscribe(document.getElementById('gist_' + props.gistArray[0] + '_' + props.gistArray[1] + '_' + props.gistArray[2]), props.gistUrl)
+      } else {
+        // 沒有Gist需要載入
+        if (props.gistArray) emit('gistLoaded', props.gistArray[2])
       }
     })
     return { props }
