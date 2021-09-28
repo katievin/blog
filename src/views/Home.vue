@@ -1,6 +1,6 @@
 <template>
   <div class="l-page">
-    <Navbar></Navbar>
+    <!-- <Navbar></Navbar> -->
     <div class="l-normal__container" @scroll="pageScrollEffect" id='1'>
       <div v-for="(t,index) in pages" :key="index" class="c-home__content">
         <img :src="t.backgroundImage" class="c-home__backgroundImage" :id="'js-home__backgroundImage'+index">
@@ -19,12 +19,10 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, reactive, ref, watch } from 'vue'
-import Navbar from '../components/Navbar.vue'
 import { useRouter } from 'vue-router'
 
 export const Home = defineComponent({
   components: ({
-    Navbar
   }),
   setup () {
     const router = useRouter()
